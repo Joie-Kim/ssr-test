@@ -4,6 +4,7 @@ import { renderToString } from '@vue/server-renderer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import App from './src/App.vue';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,23 +14,12 @@ const port = 3000;
 
 // SSR을 위한 서버 앱 생성
 async function createApp() {
-  const app = createSSRApp({
-    data() {
-      return {
-        message: 'Server Rendered Page',
-      };
-    },
-    template: `
-      <div>
-        <h1>{{ message }}</h1>
-      </div>
-    `,
-  });
+  const app = createSSRApp(App);
   return app;
 }
 
 // SSR 라우트 처리
-app.get('/server-rendered', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     const app = await createApp();
     const html = await renderToString(app);
@@ -39,7 +29,8 @@ app.get('/server-rendered', async (req, res) => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>SSR Page</title>
+          <title>Todo List</title>
+          <meta charset="UTF-8">
         </head>
         <body>
           <div id="app">${html}</div>
